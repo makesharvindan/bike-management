@@ -34,7 +34,6 @@ public class BikeFilter extends OncePerRequestFilter{
 		filterChain.doFilter(cachingRequestWrapper, contentCachingResponseWrapper);
 		String requestBody = new String(cachingRequestWrapper.getContentAsByteArray(),0,cachingRequestWrapper.getContentAsByteArray().length,cachingRequestWrapper.getCharacterEncoding());
 		String responseBody = new String(contentCachingResponseWrapper.getContentAsByteArray(),0,contentCachingResponseWrapper.getContentAsByteArray().length,contentCachingResponseWrapper.getCharacterEncoding());
-
 		LOGGER.info("method:{} uri:{} request{} response{}",request.getMethod(),request.getRequestURI(),requestBody,responseBody);
 
 		contentCachingResponseWrapper.copyBodyToResponse();
