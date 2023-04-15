@@ -28,7 +28,7 @@ public class BikeFilter extends OncePerRequestFilter{
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		
+
 		ContentCachingRequestWrapper cachingRequestWrapper = new ContentCachingRequestWrapper(request);
 		ContentCachingResponseWrapper contentCachingResponseWrapper = new ContentCachingResponseWrapper(response);
 		filterChain.doFilter(cachingRequestWrapper, contentCachingResponseWrapper);
@@ -36,11 +36,13 @@ public class BikeFilter extends OncePerRequestFilter{
 		String responseBody = new String(contentCachingResponseWrapper.getContentAsByteArray(),0,contentCachingResponseWrapper.getContentAsByteArray().length,contentCachingResponseWrapper.getCharacterEncoding());
 
 		LOGGER.info("method:{} uri:{} request{} response{}",request.getMethod(),request.getRequestURI(),requestBody,responseBody);
-		
+
 		contentCachingResponseWrapper.copyBodyToResponse();
-		
+
+//		filterChain.doFilter(request, response);
+//		LOGGER.info("method:{} uri:{} request{} response{}",request.getMethod(),request.getRequestURI(),request.getLocale(),response.getContentType());
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

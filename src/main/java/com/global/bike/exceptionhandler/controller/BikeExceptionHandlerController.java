@@ -13,5 +13,6 @@ public class BikeExceptionHandlerController {
 	@ExceptionHandler
 	public ResponseEntity<String> handleException(RecordNotFoundException e){
 		return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+	
 	}
 }

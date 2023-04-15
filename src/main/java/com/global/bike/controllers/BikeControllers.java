@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.management.RuntimeErrorException;
 
+import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +53,11 @@ public class BikeControllers {
 	@GetMapping("/{id}")
 	public Bike get(@PathVariable("id") String id) {
 		try {
-			return bikeRepository.findById(id);
+			Bike b=  bikeRepository.findById(id);
+			if(b!=null)
+				return b;
+			else
+				throw new RecordNotFoundException("no bike found");
 		}
 		catch(Exception e) {
 			System.out.println(e);
@@ -73,7 +78,6 @@ public class BikeControllers {
 	
 	@GetMapping("/group")
 	public List<BikeLists> getBikeListByGroupName(@RequestParam String groupName) throws RecordNotFoundException{
-		System.out.println("controller called");
 		return bikeRepository.getBikesByGroupName(groupName);
 	}
 }

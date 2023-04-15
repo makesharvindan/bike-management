@@ -2,6 +2,7 @@ package com.global.bike.models;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -30,6 +31,7 @@ public class Bike {
 	private Date purchaseDate;
 	private boolean contact;
 	private String group;
+	private List<String> availableColours;
 	public String getId() {
 		return id;
 	}
@@ -89,6 +91,12 @@ public class Bike {
 	}
 	public void setGroup(String group) {
 		this.group = group;
+	}
+	public List<String> getAvailableColours() {
+		return availableColours;
+	}
+	public void setAvailableColours(List<String> availableColours) {
+		this.availableColours = availableColours;
 	}
 
 
