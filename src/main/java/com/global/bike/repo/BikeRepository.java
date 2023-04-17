@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import com.global.bike.exception.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -75,18 +76,26 @@ public class BikeRepository {
 		return mongoTemplate.save(bike);
 	}
 	
-	public List<BikeLists> getBikesByGroupName(String groupName) throws RecordNotFoundException {
+	public List<BikeLists> getBikesByGroupName(String groupName) throws Exception {
 		
 		MatchOperation matchOperation = Aggregation.match(Criteria.where("group").is(groupName));
-		GroupOperation groupOperation = Aggregation.group("$group").push(new BasicDBObject("bikeName", "$name")).as("BikeList");
-		ProjectionOperation projectionOperation = Aggregation.project().and("_id").as("groupName").andExclude("_id").and("BikeList").as("bikeList");
+		GroupOperation groupOperation = Aggregation.group("$group").push(new BasicDBObject("bikeName", "$name").append("_id", "$_id").append("model", "$model")).as("BikeList");
+		ProjectionOperation projectionOperation = Aggregation.project().and("_id").as("groupName").andExclude("_id").andExclude("$bikeList._id").and("BikeList").as("bikeList");
 //		AggregationResults<List<Bike>> results = Aggregation.newAggregation(matchOperation,groupOperation);
-		AggregationResults<BikeLists> results = mongoTemplate.aggregate(Aggregation.newAggregation(matchOperation,groupOperation,projectionOperation),"bikes",BikeLists.class);
-		System.out.println("hello {}"+ results.getMappedResults());
-		if(results.getMappedResults().isEmpty())
-			throw new RecordNotFoundException("no records");
-		return results.getMappedResults();
-	
+		Optional<List<BikeLists>> response;
+		AggregationResults<BikeLists> results;
+		try {
+			 results = mongoTemplate.aggregate(Aggregation.newAggregation(matchOperation, groupOperation, projectionOperation), "bikes", BikeLists.class);
+//			response = Optional.ofNullable(results.getMappedResults());
+		} catch(RuntimeException e) {
+			throw new InternalServerErrorException("Runtime exception while fetching details from Database");
+		}
+		if(!results.getMappedResults().isEmpty()) {
+			return results.getMappedResults();
+		}
+		else {
+			throw new RecordNotFoundException("no records found");
+		}
 	}
 		
 }

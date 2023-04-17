@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class BikeLists {
 
 	private String groupName;
+
+    private String id;
 	private List<BikeList> bikeList;
 	
 	public String getGroupName() {
