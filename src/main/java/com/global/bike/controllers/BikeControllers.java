@@ -2,7 +2,6 @@ package com.global.bike.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.management.RuntimeErrorException;
@@ -32,6 +31,7 @@ public class BikeControllers {
 
 	@Autowired
 	private KafkaTemplate <String,String> kafkaTemplate;
+
 
 	@GetMapping("/ping")
 	public String ping() {
@@ -79,6 +79,7 @@ public class BikeControllers {
 	@GetMapping("/group")
 	public ResponseEntity<List<BikeLists>> getBikeListByGroupName(@RequestParam String groupName) throws Exception {
 		List<BikeLists> bikeLists = bikeRepository.getBikesByGroupName(groupName);
+
 		bikeLists.stream().filter(p->p.getBikeList().
 						removeIf(b->Integer.valueOf(b.getId())<2))
 				.collect(Collectors.toList());
