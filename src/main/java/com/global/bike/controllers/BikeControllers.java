@@ -1,16 +1,25 @@
 package com.global.bike.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.management.RuntimeErrorException;
 
+import com.global.bike.models.Sale;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.messaging.Message;
 import org.springframework.web.bind.annotation.*;
 
 import com.global.bike.exception.RecordNotFoundException;
@@ -30,7 +39,8 @@ public class BikeControllers {
 	private BikeRepository bikeRepository;
 
 	@Autowired
-	private KafkaTemplate <String,String> kafkaTemplate;
+	private KafkaTemplate <String ,Object> kafkaTemplate;
+
 
 
 	@GetMapping("/ping")
@@ -47,7 +57,7 @@ public class BikeControllers {
 	@PostMapping("/saveBike")
 	public String saveBikeDetails(@RequestBody Bike bike) {
 		System.out.println(bike);
-		kafkaTemplate.send("test1",bike.toString());
+//		kafkaTemplate.send("test1",bike);
 		Bike b = bikeRepository.save(bike);
 		return b.getId();
 	}
@@ -88,12 +98,28 @@ public class BikeControllers {
 		return new ResponseEntity<>(bikeLists, HttpStatus.OK);
 	}
 
-	@GetMapping("/kafka/{message}")
-	public String kafkaProducer(@PathVariable("message") String message) {
+//	@GetMapping("/kafka/{message}")
+//	public String kafkaProducer(@PathVariable("message") String message) {
+//
+//		kafkaTemplate.send("test",message);
+//		return "Published "+message;
+//	}
 
-		kafkaTemplate.send("wxufrcab-default",message);
-		return "Published "+message;
+	@PostMapping("/kafka/sale")
+	public ResponseEntity<String> sales(@RequestBody Sale s) {
 
+//		Map<String,Object> configs = new HashMap<>();
+//		configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"http://localhost:9092");
+//		configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+//		configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+//
+//		KafkaProducer<String,Sale> kafkaProducer = new KafkaProducer<String,Sale>(configs);
+//		ProducerRecord<String,Object> record = new ProducerRecord<>("test",s.getId(),s);
+
+//		kafkaTemplate.send(record);
+		kafkaTemplate.send("test-1",s);
+		return new ResponseEntity<>("OK",HttpStatus.OK);
+//		kafkaProducer.send(record);
 	}
 
 }
