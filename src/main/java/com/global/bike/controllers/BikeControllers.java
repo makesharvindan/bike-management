@@ -91,7 +91,7 @@ public class BikeControllers {
 	@GetMapping("/kafka/{message}")
 	public String kafkaProducer(@PathVariable("message") String message) {
 
-		kafkaTemplate.send("test",message);
+		kafkaTemplate.send("wxufrcab-default",message);
 		return "Published "+message;
 
 	}
